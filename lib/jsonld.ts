@@ -196,24 +196,24 @@ export function faqPage(url: string, items: readonly { q: string; a: string }[])
   };
 }
 
-export function howTo(
-  url: string,
-  name: string,
-  steps: readonly { title: string; body: string }[],
-): Node {
-  return {
-    '@type': 'HowTo',
-    '@id': `${url}#howto`,
-    name,
-    inLanguage: 'en',
-    step: steps.map((step, index) => ({
-      '@type': 'HowToStep',
-      position: index + 1,
-      name: step.title,
-      text: step.body,
-    })),
-  };
-}
+/*
+ * No `HowTo` node here, deliberately.
+ *
+ * Google removed the how-to rich result from Search in September 2023 — not
+ * restricted it, removed it. The markup renders nothing, for anyone. It used to
+ * wrap `page.steps` on all twelve landing pages, which is twelve `HowTo` nodes
+ * and thirty-nine `HowToStep` nodes of payload buying a SERP feature that no
+ * longer exists.
+ *
+ * `page.steps` is NOT dead with it: the steps are still written, still rendered,
+ * and still the part of the page a reader actually follows. What is gone is the
+ * duplicate copy of them in the graph.
+ *
+ * Do not reinstate this without first checking that Google has brought the
+ * feature back. `FAQPage` stays, for a reason spelled out above its own
+ * function: its rich result is equally gone, but it is read by answer engines,
+ * and being quoted correctly by one is this site's main road in.
+ */
 
 export function breadcrumb(url: string, trail: { name: string; url: string }[]): Node {
   return {
@@ -248,7 +248,7 @@ export function homeGraph(faq: readonly (readonly [string, string])[]): Node[] {
   ];
 }
 
-/** A landing page: document, FAQ, how-to, breadcrumb, and the base. */
+/** A landing page: document, FAQ, breadcrumb, and the base. */
 export function landingGraph(page: LandingPage): Node[] {
   const url = canonicalUrl(`/${page.slug}`);
   return [
@@ -262,7 +262,6 @@ export function landingGraph(page: LandingPage): Node[] {
     }),
     softwareApplication(),
     faqPage(url, page.faq),
-    howTo(url, page.h1, page.steps),
     breadcrumb(url, [HOME_CRUMB, { name: page.h1, url }]),
   ];
 }

@@ -181,10 +181,25 @@ export function Landing({
                 key={i}
                 className="relative h-20 w-32 shrink-0 overflow-hidden rounded border border-line"
               >
+                {/*
+                  `width`/`height` carry the RENDERED box (128×80, the parent's
+                  `w-32 h-20`), not the file's intrinsic size — the nine demo
+                  frames are 320×213, 320×240 and 240×320, and `object-cover`
+                  crops them all to the same box on purpose.
+
+                  They are not load-bearing for layout: the parent is fixed-size
+                  and `overflow-hidden`, so nothing here could shift. They are
+                  here because Lighthouse's "image elements do not have explicit
+                  width and height" audit fails on their absence regardless, and
+                  because stating the box the image will occupy lets the browser
+                  reserve it without consulting the file.
+                */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`/demo/strip/${name}.jpg`}
                   alt=""
+                  width={128}
+                  height={80}
                   loading="lazy"
                   className="h-full w-full object-cover opacity-80"
                 />
@@ -388,8 +403,10 @@ export function Landing({
             From the maker of{' '}
             <a href="https://www.music-waveform.com" className="underline decoration-line underline-offset-2 hover:text-paper">Waveform</a>,{' '}
             <a href="https://www.squeezevid.app" className="underline decoration-line underline-offset-2 hover:text-paper">SqueezeVid</a>,{' '}
-            <a href="https://www.graphmint.app" className="underline decoration-line underline-offset-2 hover:text-paper">Graphmint</a> and{' '}
-            <a href="https://www.papercv.app" className="underline decoration-line underline-offset-2 hover:text-paper">PaperCV</a>.
+            <a href="https://www.graphmint.app" className="underline decoration-line underline-offset-2 hover:text-paper">Graphmint</a>,{' '}
+            <a href="https://www.papercv.app" className="underline decoration-line underline-offset-2 hover:text-paper">PaperCV</a>, and, in French,{' '}
+            <a href="https://www.simulateurepargne.app" className="underline decoration-line underline-offset-2 hover:text-paper">Simulateur d’épargne</a> and{' '}
+            <a href="https://www.kiturgence.app" className="underline decoration-line underline-offset-2 hover:text-paper">Kit Urgence</a>.
             Sample frames are CC0 test shots from raw.pixls.us.
           </p>
         </div>
